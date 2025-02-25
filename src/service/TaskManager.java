@@ -6,6 +6,7 @@ import model.Subtask;
 import model.Task;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static model.Status.*;
 import static java.util.stream.Collectors.toList;
@@ -26,7 +27,7 @@ public class TaskManager {
     }
 
     public Epic getEpic(long id) { return epics.get(id); }
-    public List<Epic> getAllEpics() { return epics.values().stream().collect(toList()); }
+    public List<Epic> getAllEpics() { return epics.values().stream().sorted().collect(toList()); }
 
     public List<Subtask> getEpicSubtasks(long id) {
         return subtasks
@@ -38,6 +39,7 @@ public class TaskManager {
 
     public void updateEpic(Epic epic) {
         epics.put(epic.getId(), epic);
+        epics.get(epic.getId()).setSubtasks(subtasks.values().stream().collect(toSet()));
         epic.calculateAndSetEpicStatus();
     }
 
@@ -58,7 +60,7 @@ public class TaskManager {
     }
 
     public Task getTask(long id) { return tasks.get(id); }
-    public List<Task> getAllTasks() { return tasks.values().stream().collect(toList()); }
+    public List<Task> getAllTasks() { return tasks.values().stream().sorted().collect(toList()); }
     public void updateTask(Task task) {tasks.put(task.getId(), task);}
     public void removeTaskById(long id) { tasks.remove(id); }
     public void removeAllTasks() { tasks.clear(); }
@@ -79,7 +81,7 @@ public class TaskManager {
     }
 
     public Subtask getSubtask(long id) { return subtasks.get(id); }
-    public List<Subtask> getAllSubtasks() { return subtasks.values().stream().collect(toList()); }
+    public List<Subtask> getAllSubtasks() { return subtasks.values().stream().sorted().collect(toList()); }
 
     public void updateSubtask(Subtask subtask) {
         if (!epics.containsKey(subtask.getEpicId())){
@@ -90,22 +92,6 @@ public class TaskManager {
         var epic = epics.get(subtask.getEpicId());
         epic.addSubtask(subtask);
         epic.calculateAndSetEpicStatus();
-    }
-
-    public void calculateAndSetEpicStatus(long id) {
-        Set<Status> epicSubtasksStatuses = getEpicSubtasks(id)
-                .stream()
-                .map(x -> x.getStatus())
-                .collect(toSet());
-
-        if (epicSubtasksStatuses.size() == 0 || (epicSubtasksStatuses.size() == 1 && epicSubtasksStatuses.contains(NEW)))
-            epics.get(id).setStatus(NEW);
-        else if (epicSubtasksStatuses.size() == 1 && epicSubtasksStatuses.contains(DONE)) {
-            epics.get(id).setStatus(DONE);
-        }
-        else
-            epics.get(id).setStatus(IN_PROGRESS);
-
     }
 
     public void removeSubtaskById(long id) {

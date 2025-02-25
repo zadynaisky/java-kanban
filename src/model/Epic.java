@@ -1,6 +1,7 @@
 package model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,35 +14,48 @@ public class Epic extends Task{
     Не знаю зачем хранить в эпике его сабтаски или айдишники его сабтасок (т.к. их всегда можно получить
     с помощью TaskManager'а, и его мапы subtasks фильтрованной по эпикАйди, но в задании сказано что
     "Каждый эпик знает, какие подзадачи в него входят.", а для этого эпик либо должен "знать" про таскменеджер,
-    либо хранить в себе информацию про свои сабтаски). Если ты мне расскажешь в чем великий смысл этого дублирования
+    либо хранить в себе информацию про свои сабтаски). Подскажите в чем великий смысл этого дублирования в задании
     которое потенциально может привести систему в неконсистентно состояние (в мапе менеджера сабтаска есть, а в мапе
     эпика нет, или наоборот - мне не понятно.
      */
-    Map<Long, Subtask> subtasks;
+    Set<Subtask> subtasks;
 
     public Epic(String title, String description) {
         super(title, description);
-        this.subtasks = new HashMap<>();
+        this.subtasks = new HashSet<>();
     }
 
-    public Epic(long id, String title, String description, Status status) {
-        super(id, title, description, status);
-        this.subtasks = new HashMap<>();
+    public Epic(long id, String title, String description) {
+        super(title, description);
+        this.setId(id);
+        this.subtasks = new HashSet<>();
+    }
+
+    public void setSubtasks(Set<Subtask> subtasks) {
+        this.subtasks = subtasks;
     }
 
     public void addSubtask(Subtask subtask) {
         if (subtasks == null || subtask.getEpicId() != this.getId()) {
             System.out.println("Incorrect subtask");
         }
-        subtasks.put(subtask.getId(), subtask);
+        subtasks.add(subtask);
+        this.calculateAndSetEpicStatus();
     }
 
-    public void removeSubtask(long id) { subtasks.remove(id); }
+    public void removeSubtask(long id) {
+        subtasks.remove(id);
+        this.calculateAndSetEpicStatus();
+    }
     public void  removeAllSubtasks() { subtasks.clear();}
 
+    /*
+    Ревьювер, этот метод кмк должен быть в менеджере, но тогда совсем непонятно зачем "Каждый эпик знает,
+    какие подзадачи в него входят.". Чтобы хоть как-то оправдать это сет с сабтасками в эпике
+    сделал тут. Почему не стоило так делать?
+     */
     public void calculateAndSetEpicStatus() {
         Set<Status> epicSubtasksStatuses = subtasks
-                .values()
                 .stream()
                 .map(x -> x.getStatus())
                 .collect(toSet());
@@ -62,6 +76,7 @@ public class Epic extends Task{
                 ", title='" + this.getTitle() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", status='" + this.getStatus() + '\'' +
+                ", subtasks.size=" + subtasks.size() +
                 '}';
     }
 }
