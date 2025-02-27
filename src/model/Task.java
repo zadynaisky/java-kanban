@@ -3,12 +3,11 @@ package model;
 import java.util.Objects;
 import static model.Status.NEW;
 
-public class Task {
+public class Task implements Comparable<Task> {
     private long id;
     private String title;
     private String description;
     private Status status;
-
 
     public Task(String title, String description) {
         this.title = title;
@@ -59,5 +58,10 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        return Long.compare(id, o.id);
     }
 }
