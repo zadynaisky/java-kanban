@@ -1,7 +1,7 @@
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import service.TaskManager;
+import service.InMemoryTaskManager;
 
 import static model.Status.*;
 
@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
 
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         long firstTaskId = taskManager.addTask(new Task("First task title", "First task description"));
         long secondTaskId = taskManager.addTask(new Task("Second task title", "Second task description"));
 
