@@ -16,6 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Long, Task> tasks = new HashMap<>();
     private final Map<Long, Subtask> subtasks = new HashMap<>();
     private static long nextId = 1;
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public long addEpic(Epic epic) {
@@ -25,7 +26,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpic(long id) { return epics.get(id); }
+    public Epic getEpic(long id) {
+        var epic = epics.get(id);
+        if (epic != null)
+            historyManager.add(epic);
+        return epic;
+    }
 
     @Override
     public List<Epic> getAllEpics() { return epics.values().stream().sorted().collect(toList()); }
@@ -63,7 +69,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(long id) { return tasks.get(id); }
+    public Task getTask(long id) {
+        var task = tasks.get(id);
+        if (task != null)
+            historyManager.add(task);
+        return task;
+    }
+
     @Override
     public List<Task> getAllTasks() { return tasks.values().stream().sorted().collect(toList()); }
     @Override
@@ -90,7 +102,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask getSubtask(long id) { return subtasks.get(id); }
+    public Subtask getSubtask(long id) {
+        var subtask = subtasks.get(id);
+        if (subtask != null)
+            historyManager.add(subtask);
+        return subtask;
+    }
 
     @Override
     public List<Subtask> getAllSubtasks() { return subtasks.values().stream().sorted().collect(toList()); }
