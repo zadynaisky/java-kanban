@@ -87,6 +87,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public long addSubtask(Subtask subtask) {
+        if (!(subtask instanceof Subtask)){
+            System.out.println("Only subtasks can be added");
+            return -1;
+        }
+
         var epicId = subtask.getEpicId();
         if (epics.containsKey(epicId)){
             subtask.setId(nextId++);
@@ -144,6 +149,10 @@ public class InMemoryTaskManager implements TaskManager {
                             x.removeAllSubtasks();
                             calculateAndSetEpicStatus(x);
                         });
+    }
+
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     public void calculateAndSetEpicStatus(Epic epic) {
