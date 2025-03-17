@@ -2,6 +2,8 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import service.InMemoryTaskManager;
+import service.Managers;
+import service.TaskManager;
 
 import static model.Status.*;
 
@@ -9,8 +11,8 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        //Здесь вообще все можно удалить, т.к. все это теперь есть в тестах
+        InMemoryTaskManager taskManager = (InMemoryTaskManager) Managers.getDefault();
         long firstTaskId = taskManager.addTask(new Task("First task title", "First task description"));
         long secondTaskId = taskManager.addTask(new Task("Second task title", "Second task description"));
 
