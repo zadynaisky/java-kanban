@@ -1,9 +1,9 @@
-package service;
+package main.service;
 
-import model.Epic;
-import model.Status;
-import model.Subtask;
-import model.Task;
+import main.model.Epic;
+import main.model.Status;
+import main.model.Subtask;
+import main.model.Task;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static model.Status.*;
+import static main.model.Status.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private final Map<Long, Epic> epics = new HashMap<>();

@@ -1,8 +1,10 @@
-import model.Epic;
-import model.Subtask;
-import model.Task;
-import service.InMemoryTaskManager;
-import service.Managers;
+package main;
+
+import main.model.Epic;
+import main.model.Subtask;
+import main.model.Task;
+import main.service.InMemoryTaskManager;
+import main.service.Managers;
 
 public class Main {
 

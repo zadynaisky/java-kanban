@@ -1,6 +1,6 @@
-package service;
+package main.service;
 
-import model.Task;
+import main.model.Task;
 
 import java.util.List;
 

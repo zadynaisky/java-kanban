@@ -1,15 +1,15 @@
-package service;
+package main.service;
 
-import model.Epic;
-import model.Subtask;
-import model.Task;
+import main.model.Epic;
+import main.model.Subtask;
+import main.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static model.Status.*;
+import static main.model.Status.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskManagerTest {

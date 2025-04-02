@@ -1,8 +1,8 @@
-package model;
+package main.model;
 
 import java.util.Objects;
 
-import static model.Status.NEW;
+import static main.model.Status.NEW;
 
 public class Task implements Comparable<Task> {
     private long id;
