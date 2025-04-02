@@ -55,7 +55,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void removeTaskById(){
+    public void removeTaskById() {
         Task task = new Task("Title", "Description");
         long taskId = taskManager.addTask(task);
         assertEquals(1, taskManager.getAllTasks().size());
@@ -66,7 +66,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void removeEpicById(){
+    public void removeEpicById() {
         Epic epic = new Epic("Epic Title", "Epic Description");
         var epicId = taskManager.addEpic(epic);
         Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId);
@@ -76,7 +76,8 @@ public class InMemoryTaskManagerTest {
         assertNull(taskManager.getSubtask(subtaskId));
     }
 
-    @Test void removeSubtaskById(){
+    @Test
+    void removeSubtaskById() {
         Epic epic = new Epic("Epic Title", "Epic Description");
         var epicId = taskManager.addEpic(epic);
         Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId);

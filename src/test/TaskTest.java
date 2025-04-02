@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
-import static model.Status.*;
+
+import static model.Status.IN_PROGRESS;
+import static model.Status.NEW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskTest {

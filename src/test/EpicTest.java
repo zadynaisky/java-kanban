@@ -1,7 +1,6 @@
 package test;
 
 import model.Epic;
-import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
@@ -12,7 +11,8 @@ import java.util.List;
 
 import static model.Status.IN_PROGRESS;
 import static model.Status.NEW;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class EpicTest {
     private TaskManager taskManager;

@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Objects;
+
 import static model.Status.NEW;
 
 public class Task implements Comparable<Task> {
@@ -22,20 +23,34 @@ public class Task implements Comparable<Task> {
         this.status = status;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-    public long getId() { return id; }
+    public long getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
+    public String getTitle() {
+        return title;
+    }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Status getStatus() { return status; }
+    public Status getStatus() {
+        return status;
+    }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public boolean equals(Object obj) {

@@ -5,7 +5,10 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -34,7 +37,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Epic> getAllEpics() { return epics.values().stream().sorted().collect(toList()); }
+    public List<Epic> getAllEpics() {
+        return epics.values().stream().sorted().collect(toList());
+    }
 
     @Override
     public List<Subtask> getEpicSubtasks(long id) {
@@ -47,7 +52,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpic(Epic epic) { epics.put(epic.getId(), epic); }
+    public void updateEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
 
     @Override
     public void removeEpicById(long id) {
@@ -92,9 +99,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> getAllTasks() { return tasks.values().stream().sorted().collect(toList()); }
+    public List<Task> getAllTasks() {
+        return tasks.values().stream().sorted().collect(toList());
+    }
+
     @Override
-    public void updateTask(Task task) {tasks.put(task.getId(), task);}
+    public void updateTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
 
     @Override
     public void removeTaskById(long id) {
@@ -116,20 +128,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public long addSubtask(Subtask subtask) {
-        if (!(subtask instanceof Subtask)){
+        if (!(subtask instanceof Subtask)) {
             System.out.println("Only subtasks can be added");
             return -1;
         }
 
         var epicId = subtask.getEpicId();
-        if (epics.containsKey(epicId)){
+        if (epics.containsKey(epicId)) {
             subtask.setId(nextId++);
             subtasks.put(subtask.getId(), subtask);
             epics.get(epicId).addSubtask(subtask.getId());
             calculateAndSetEpicStatus(epics.get(epicId));
             return subtask.getId();
-        }
-        else{
+        } else {
             System.out.println("Subtask wasn't added. Couldn't find epic with id " + subtask.getEpicId());
             return -1;
         }
@@ -144,12 +155,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Subtask> getAllSubtasks() { return subtasks.values().stream().sorted().collect(toList()); }
+    public List<Subtask> getAllSubtasks() {
+        return subtasks.values().stream().sorted().collect(toList());
+    }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         var epicId = subtask.getEpicId();
-        if (!epics.containsKey(epicId)){
+        if (!epics.containsKey(epicId)) {
             System.out.println("Subtask wasn't updated. Couldn't find epic with id " + epicId);
             return;
         }
@@ -183,9 +196,9 @@ public class InMemoryTaskManager implements TaskManager {
                 .stream()
                 .map(x -> x.getValue())
                 .forEach(x -> {
-                            x.removeAllSubtasks();
-                            calculateAndSetEpicStatus(x);
-                        });
+                    x.removeAllSubtasks();
+                    calculateAndSetEpicStatus(x);
+                });
     }
 
     public List<Task> getHistory() {
@@ -204,8 +217,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(NEW);
         else if (epicSubtasksStatuses.size() == 1 && epicSubtasksStatuses.contains(DONE)) {
             epic.setStatus(DONE);
-        }
-        else
+        } else
             epic.setStatus(IN_PROGRESS);
     }
 

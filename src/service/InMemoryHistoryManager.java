@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
-
 public class InMemoryHistoryManager implements HistoryManager {
     private final CustomLinkedList<Task> history = new CustomLinkedList<>();
 
@@ -30,13 +28,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history.getTasks();
     }
 
-    public class CustomLinkedList<T extends Task>{
+    public class CustomLinkedList<T extends Task> {
         private Node<T> first;
         private Node<T> last;
-        private final Map<Long, Node<T>> registry = new HashMap<>() ;
+        private final Map<Long, Node<T>> registry = new HashMap<>();
 
         public void linkLast(T t) {
-            final  Node<T> l = this.last;
+            final Node<T> l = this.last;
             final Node<T> newNode = new Node<>(l, t, null);
             this.last = newNode;
 
@@ -58,7 +56,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             return tasks;
         }
 
-        public void remove(long id){
+        public void remove(long id) {
             if (registry.containsKey(id))
                 removeNode(registry.get(id));
         }

@@ -10,11 +10,8 @@ import service.TaskManager;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static model.Status.IN_PROGRESS;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,7 +56,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void getHistoryReturnsLastSeenIssues(){
+    public void getHistoryReturnsLastSeenIssues() {
         final int tasksNum = 1_000_000;
         for (int i = 1; i <= tasksNum; i++) {
             Task task = new Task("Title" + i, "Description" + i);
