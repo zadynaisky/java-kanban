@@ -1,6 +1,5 @@
-package test;
+package model;
 
-import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
@@ -10,7 +9,7 @@ import static model.Status.IN_PROGRESS;
 import static model.Status.NEW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TaskTest {
+public class SubtaskTest {
     private TaskManager taskManager;
 
     @BeforeEach
@@ -19,9 +18,9 @@ class TaskTest {
     }
 
     @Test
-    public void twoDifferentTasksWithSameIdAreEqual() {
-        Task task1 = new Task(1, "title 1", "description 1", NEW);
-        Task task2 = new Task(1, "title 2", "description 2", IN_PROGRESS);
-        assertEquals(task1, task2, "Tasks with same id are not equal");
+    public void twoDifferentSubtasksWithSameIdAreEqual() {
+        Subtask subtask1 = new Subtask(1, "title 1", "description 1", NEW, 1);
+        Subtask subtask2 = new Subtask(1, "title 2", "description 2", IN_PROGRESS, 2);
+        assertEquals(subtask1, subtask2, "Subtasks with same id are not equal");
     }
 }
