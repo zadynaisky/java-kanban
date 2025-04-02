@@ -1,5 +1,4 @@
-package main.service;
-
+import main.service.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;

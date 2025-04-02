@@ -1,8 +1,8 @@
-package main.service;
-
 import main.model.Epic;
 import main.model.Subtask;
 import main.model.Task;
+import main.service.Managers;
+import main.service.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
