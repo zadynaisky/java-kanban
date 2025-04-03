@@ -48,9 +48,5 @@ public class Main {
         System.out.println("Shuffling tasks in history...");
         taskManager.removeEpicById(firstEpicId);
         taskManager.getHistory().stream().forEach(System.out::println);
-
-
-        //taskManager.removeEpicById(firstEpicId);
-        //taskManager.printAllTaskAndEpics();
     }
 }

@@ -5,10 +5,7 @@ import main.model.Status;
 import main.model.Subtask;
 import main.model.Task;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -38,7 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Epic> getAllEpics() {
-        return epics.values().stream().sorted().collect(toList());
+        return new ArrayList<>(epics.values());
     }
 
     @Override
@@ -100,7 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getAllTasks() {
-        return tasks.values().stream().sorted().collect(toList());
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
@@ -156,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getAllSubtasks() {
-        return subtasks.values().stream().sorted().collect(toList());
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
