@@ -1,17 +1,15 @@
-package test;
-
-import model.Epic;
-import model.Subtask;
-import model.Task;
+import main.model.Epic;
+import main.model.Subtask;
+import main.model.Task;
+import main.service.Managers;
+import main.service.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.Managers;
-import service.TaskManager;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static model.Status.*;
+import static main.model.Status.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskManagerTest {
@@ -55,7 +53,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void removeTaskById(){
+    public void removeTaskById() {
         Task task = new Task("Title", "Description");
         long taskId = taskManager.addTask(task);
         assertEquals(1, taskManager.getAllTasks().size());
@@ -66,7 +64,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void removeEpicById(){
+    public void removeEpicById() {
         Epic epic = new Epic("Epic Title", "Epic Description");
         var epicId = taskManager.addEpic(epic);
         Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId);
@@ -76,7 +74,8 @@ public class InMemoryTaskManagerTest {
         assertNull(taskManager.getSubtask(subtaskId));
     }
 
-    @Test void removeSubtaskById(){
+    @Test
+    void removeSubtaskById() {
         Epic epic = new Epic("Epic Title", "Epic Description");
         var epicId = taskManager.addEpic(epic);
         Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId);

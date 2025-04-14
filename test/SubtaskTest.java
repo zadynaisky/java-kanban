@@ -1,11 +1,13 @@
 package test;
 
-import model.Subtask;
+import main.model.Subtask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.Managers;
-import service.TaskManager;
-import static model.Status.*;
+import main.service.Managers;
+import main.service.TaskManager;
+
+import static main.model.Status.IN_PROGRESS;
+import static main.model.Status.NEW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SubtaskTest {

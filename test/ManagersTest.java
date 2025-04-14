@@ -1,8 +1,8 @@
-package test;
-
+import main.service.*;
 import org.junit.jupiter.api.Test;
-import service.*;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ManagersTest {
     @Test

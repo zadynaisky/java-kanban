@@ -1,4 +1,4 @@
-package model;
+package main.model;
 
 public class Subtask extends Task {
     private final long epicId;
@@ -13,7 +13,9 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public long getEpicId() {return epicId;}
+    public long getEpicId() {
+        return epicId;
+    }
 
     @Override
     public String toString() {

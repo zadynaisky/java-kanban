@@ -1,18 +1,16 @@
-package test;
-
-import model.Epic;
-import model.Subtask;
-import model.Task;
+import main.model.Epic;
+import main.model.Subtask;
+import main.model.Task;
+import main.service.Managers;
+import main.service.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.Managers;
-import service.TaskManager;
 
 import java.util.HashSet;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static model.Status.IN_PROGRESS;
+import static main.model.Status.IN_PROGRESS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryHistoryManagerTest {
@@ -56,16 +54,46 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void getHistoryReturnsOnly10LastSeenIssues(){
-        for (int i = 1; i <= 11; i++) {
+    public void getHistoryReturnsLastSeenIssues() {
+        final int tasksNum = 1_000_000;
+        for (int i = 1; i <= tasksNum; i++) {
             Task task = new Task("Title" + i, "Description" + i);
             var taskId = taskManager.addTask(task);
             taskManager.getTask(taskId);
         }
-        assertEquals(10, taskManager.getHistory().size());
+        assertEquals(tasksNum, taskManager.getHistory().size());
         List<String> tasksNames = taskManager.getHistory().stream().map(Task::getTitle).collect(toList());
-        assertFalse(tasksNames.contains("Title1"));
+        assertTrue(tasksNames.contains("Title1"));
         assertTrue(tasksNames.contains("Title2"));
-        assertTrue(tasksNames.contains("Title11"));
+        assertTrue(tasksNames.contains("Title" + tasksNum));
+        assertFalse(tasksNames.contains("Title" + tasksNum + 1));
+    }
+
+    @Test
+    public void tasksRemovesFromHistoryAfterDeletion() {
+        Epic epic = new Epic("Epic title", "Epic description");
+        taskManager.addEpic(epic);
+        taskManager.getEpic(epic.getId());
+        Subtask subtask = new Subtask("Subtask title", "Subtask description", epic.getId());
+        taskManager.addSubtask(subtask);
+        taskManager.getSubtask(subtask.getId());
+        Task task = new Task("Title", "Description");
+        taskManager.addTask(task);
+        taskManager.getTask(task.getId());
+        assertTrue(taskManager.getHistory().contains(epic));
+        assertTrue(taskManager.getHistory().contains(subtask));
+        assertTrue(taskManager.getHistory().contains(task));
+        taskManager.removeSubtaskById(subtask.getId());
+        assertTrue(taskManager.getHistory().contains(epic));
+        assertFalse(taskManager.getHistory().contains(subtask));
+        assertTrue(taskManager.getHistory().contains(task));
+        taskManager.removeEpicById(epic.getId());
+        assertFalse(taskManager.getHistory().contains(epic));
+        assertFalse(taskManager.getHistory().contains(subtask));
+        assertTrue(taskManager.getHistory().contains(task));
+        taskManager.removeTaskById(task.getId());
+        assertFalse(taskManager.getHistory().contains(epic));
+        assertFalse(taskManager.getHistory().contains(subtask));
+        assertFalse(taskManager.getHistory().contains(task));
     }
 }

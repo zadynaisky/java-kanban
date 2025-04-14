@@ -1,8 +1,9 @@
-package model;
+package main.model;
+
 import java.util.HashSet;
 import java.util.Set;
 
-public class Epic extends Task{
+public class Epic extends Task {
     private Set<Long> subtasks;
 
     public Epic(String title, String description) {
@@ -15,13 +16,21 @@ public class Epic extends Task{
         this.subtasks = subtasks;
     }
 
-    public Set<Long> getSubtasks() {return subtasks;}
+    public Set<Long> getSubtasks() {
+        return subtasks;
+    }
 
-    public void addSubtask(long id) { subtasks.add(id); }
+    public void addSubtask(long id) {
+        subtasks.add(id);
+    }
 
-    public void removeSubtask(long id) { subtasks.remove(id); }
+    public void removeSubtask(long id) {
+        subtasks.remove(id);
+    }
 
-    public void  removeAllSubtasks() { subtasks.clear(); }
+    public void removeAllSubtasks() {
+        subtasks.clear();
+    }
 
     @Override
     public String toString() {
