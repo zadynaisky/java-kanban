@@ -231,4 +231,16 @@ public class InMemoryTaskManager implements TaskManager {
                     getEpicSubtasks(epic.getId()).forEach(task -> System.out.println("\t" + task));
                 });
     }
+
+    public static void setNextId(long nextId) {
+        InMemoryTaskManager.nextId = nextId;
+    }
+
+    public static long getNextId() {
+        return nextId;
+    }
+
+    public Map<Long, Epic> getEpics() {
+        return epics;
+    }
 }

@@ -3,6 +3,8 @@ package main.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import static main.model.TaskType.EPIC;
+
 public class Epic extends Task {
     private Set<Long> subtasks;
 
@@ -41,5 +43,10 @@ public class Epic extends Task {
                 ", status='" + this.getStatus() + '\'' +
                 ", subtasks.size=" + subtasks.size() +
                 '}';
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return EPIC;
     }
 }

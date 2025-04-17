@@ -3,6 +3,7 @@ package main.model;
 import java.util.Objects;
 
 import static main.model.Status.NEW;
+import static main.model.TaskType.TASK;
 
 public class Task implements Comparable<Task> {
     private long id;
@@ -78,5 +79,14 @@ public class Task implements Comparable<Task> {
     @Override
     public int compareTo(Task o) {
         return Long.compare(id, o.id);
+    }
+
+    public TaskType getTaskType() {
+        return TASK;
+    }
+
+    public String[] toCSVPrinterRecord() {
+        return new String[]{String.valueOf(getId()), getTaskType().name(), getTitle(), getDescription(),
+                getStatus().name(), null};
     }
 }

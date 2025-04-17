@@ -1,5 +1,7 @@
 package main.model;
 
+import static main.model.TaskType.SUBTASK;
+
 public class Subtask extends Task {
     private final long epicId;
 
@@ -26,5 +28,16 @@ public class Subtask extends Task {
                 ", status='" + this.getStatus() + '\'' +
                 ", epicId=" + epicId +
                 '}';
+    }
+
+    @Override
+    public String[] toCSVPrinterRecord() {
+        return new String[]{String.valueOf(getId()), getTaskType().name(), getTitle(), getDescription(),
+                getStatus().name(), String.valueOf(getEpicId())};
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return SUBTASK;
     }
 }
