@@ -67,8 +67,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public void load(){
-        try (Reader in = new FileReader(datasource)){
+    public void load() {
+        try (Reader in = new FileReader(datasource)) {
             Iterable<CSVRecord> records = CSVFormat.Builder
                     .create(CSVFormat.DEFAULT)
                     .setHeader("id", "taskType", "title", "description", "status", "epicId")
@@ -81,7 +81,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 if (task.getId() >= getNextId())
                     setNextId(task.getId());
 
-                switch (task.getTaskType()){
+                switch (task.getTaskType()) {
                     case TASK -> super.updateTask(task);
                     case EPIC -> super.updateEpic((Epic) task);
                     case SUBTASK -> super.updateSubtask((Subtask) task);
