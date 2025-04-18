@@ -1,5 +1,7 @@
 package main.model;
 
+import java.util.StringJoiner;
+
 import static main.model.TaskType.SUBTASK;
 
 public class Subtask extends Task {
@@ -30,10 +32,15 @@ public class Subtask extends Task {
                 '}';
     }
 
-    @Override
-    public String[] toCSVPrinterRecord() {
-        return new String[]{String.valueOf(getId()), getTaskType().name(), getTitle(), getDescription(),
-                getStatus().name(), String.valueOf(getEpicId())};
+    public String toCsvString() {
+        return new StringJoiner(",")
+                .add(String.valueOf(getId()))
+                .add(getTaskType().name())
+                .add(getTitle())
+                .add(getDescription())
+                .add(getStatus().name())
+                .add(String.valueOf(epicId))
+                .toString();
     }
 
     @Override
