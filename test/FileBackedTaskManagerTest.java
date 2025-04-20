@@ -34,7 +34,7 @@ class FileBackedTaskManagerTest {
     @Test
     public void shouldSaveAndLoadEmptyTasksEpicsSubtasks(){
         fileBackedTaskManager.save();
-        fileBackedTaskManager.load();
+        fileBackedTaskManager.loadFromFile(testFile);
         assertEquals(Collections.EMPTY_LIST, fileBackedTaskManager.getAllTasks());
         assertEquals(Collections.EMPTY_LIST, fileBackedTaskManager.getAllEpics());
         assertEquals(Collections.EMPTY_LIST, fileBackedTaskManager.getAllSubtasks());
@@ -61,7 +61,7 @@ class FileBackedTaskManagerTest {
         long secondEpicId = fileBackedTaskManager.addEpic(new Epic("Second epic title", "Second epic description"));
 
         FileBackedTaskManager secondFileBackedTaskManager = new FileBackedTaskManager(testFile);
-        secondFileBackedTaskManager.load();
+        secondFileBackedTaskManager.loadFromFile(testFile);
 
         assertEquals(fileBackedTaskManager.getAllTasks(), secondFileBackedTaskManager.getAllTasks());
         assertEquals(fileBackedTaskManager.getAllTasks(), secondFileBackedTaskManager.getAllTasks());

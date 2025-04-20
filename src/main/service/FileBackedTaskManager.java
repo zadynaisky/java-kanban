@@ -10,7 +10,7 @@ import static main.model.Status.IN_PROGRESS;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File datasource;
-    private final String csvHeader = "id,taskType,title,description,status,epicId";
+    private static final String csvHeader = "id,taskType,title,description,status,epicId";
 
     public FileBackedTaskManager(File datasource) {
         this.datasource = datasource;
@@ -33,7 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         FileBackedTaskManager secondManager = new FileBackedTaskManager(new File("/home/vidyakina/test.csv"));
 
-        secondManager.load();
+        secondManager.loadFromFile(new File("/home/vidyakina/test.csv"));
 
         System.out.println("Tasks are equal: " + firstManager.getAllTasks().equals(secondManager.getAllTasks()));
         System.out.println("Epics are equal: " + firstManager.getAllEpics().equals(secondManager.getAllEpics()));
@@ -43,23 +43,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(datasource))) {
-            writer.write(csvHeader + "\r\n");
+            writer.write(csvHeader + System.lineSeparator());
             for (Task task : getAllTasks()) {
-                writer.write(task.toCsvString() + "\r\n");
+                writer.write(task.toCsvString() + System.lineSeparator());
             }
             for (Epic epic : getAllEpics()) {
-                writer.write(epic.toCsvString() + "\r\n");
+                writer.write(epic.toCsvString() + System.lineSeparator());
             }
             for (Subtask subtask : getAllSubtasks()) {
-                writer.write(subtask.toCsvString() + "\r\n");
+                writer.write(subtask.toCsvString() + System.lineSeparator());
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Couldn't save the data to the file");
         }
     }
 
-    public void load() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(datasource))) {
+    public void loadFromFile(File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.readLine();
             while (reader.ready()) {
                 String line = reader.readLine();
