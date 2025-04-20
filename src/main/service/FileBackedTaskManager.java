@@ -31,9 +31,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 "Epic 1: Third subtask description", firstEpicId));
         long secondEpicId = firstManager.addEpic(new Epic("Second epic title", "Second epic description"));
 
-        FileBackedTaskManager secondManager = new FileBackedTaskManager(new File("/home/vidyakina/test.csv"));
-
-        secondManager.loadFromFile(new File("/home/vidyakina/test.csv"));
+        FileBackedTaskManager secondManager = FileBackedTaskManager.loadFromFile(new File("/home/vidyakina/test.csv"));
 
         System.out.println("Tasks are equal: " + firstManager.getAllTasks().equals(secondManager.getAllTasks()));
         System.out.println("Epics are equal: " + firstManager.getAllEpics().equals(secondManager.getAllEpics()));
@@ -58,18 +56,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public void loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.readLine();
             while (reader.ready()) {
                 String line = reader.readLine();
-                var task = fromString(line);
+                var task = fileBackedTaskManager.fromString(line);
                 if (task.getId() >= getNextId())
                     setNextId(task.getId());
                 switch (task.getTaskType()) {
-                    case TASK -> super.updateTask(task);
-                    case EPIC -> super.updateEpic((Epic) task);
-                    case SUBTASK -> super.updateSubtask((Subtask) task);
+                    case TASK -> fileBackedTaskManager.tasks.put(task.getId(), task);
+                    case EPIC -> fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
+                    case SUBTASK -> fileBackedTaskManager.subtasks.put(task.getId(), (Subtask) task);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -77,7 +76,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Couldn't read file");
         }
-        linkEpicsToSubtask();
+        fileBackedTaskManager.linkEpicsToSubtask();
+        return fileBackedTaskManager;
     }
 
     public Task fromString(String line) {

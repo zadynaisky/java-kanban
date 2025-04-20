@@ -60,8 +60,7 @@ class FileBackedTaskManagerTest {
                 "Epic 1: Third subtask description", firstEpicId));
         long secondEpicId = fileBackedTaskManager.addEpic(new Epic("Second epic title", "Second epic description"));
 
-        FileBackedTaskManager secondFileBackedTaskManager = new FileBackedTaskManager(testFile);
-        secondFileBackedTaskManager.loadFromFile(testFile);
+        FileBackedTaskManager secondFileBackedTaskManager = FileBackedTaskManager.loadFromFile(testFile);
 
         assertEquals(fileBackedTaskManager.getAllTasks(), secondFileBackedTaskManager.getAllTasks());
         assertEquals(fileBackedTaskManager.getAllTasks(), secondFileBackedTaskManager.getAllTasks());
