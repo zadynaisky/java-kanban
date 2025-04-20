@@ -63,8 +63,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             while (reader.ready()) {
                 String line = reader.readLine();
                 var task = fileBackedTaskManager.fromString(line);
-                if (task.getId() >= getNextId())
-                    setNextId(task.getId());
+                if (task.getId() >= fileBackedTaskManager.getNextId())
+                    fileBackedTaskManager.setNextId(task.getId() + 1);
                 switch (task.getTaskType()) {
                     case TASK -> fileBackedTaskManager.tasks.put(task.getId(), task);
                     case EPIC -> fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
