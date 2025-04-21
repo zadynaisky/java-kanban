@@ -1,8 +1,10 @@
 package main.model;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 import static main.model.Status.NEW;
+import static main.model.TaskType.TASK;
 
 public class Task implements Comparable<Task> {
     private long id;
@@ -66,6 +68,15 @@ public class Task implements Comparable<Task> {
     }
 
     @Override
+    public int compareTo(Task o) {
+        return Long.compare(id, o.id);
+    }
+
+    public TaskType getTaskType() {
+        return TASK;
+    }
+
+    @Override
     public String toString() {
         return "Task{" +
                 "id=" + id +
@@ -75,8 +86,14 @@ public class Task implements Comparable<Task> {
                 '}';
     }
 
-    @Override
-    public int compareTo(Task o) {
-        return Long.compare(id, o.id);
+    public String toCsvString() {
+        return new StringJoiner(",")
+                .add(String.valueOf(getId()))
+                .add(getTaskType().name())
+                .add(getTitle())
+                .add(getDescription())
+                .add(getStatus().name())
+                .add("")
+                .toString();
     }
 }

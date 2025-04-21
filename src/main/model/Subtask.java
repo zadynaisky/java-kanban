@@ -1,5 +1,9 @@
 package main.model;
 
+import java.util.StringJoiner;
+
+import static main.model.TaskType.SUBTASK;
+
 public class Subtask extends Task {
     private final long epicId;
 
@@ -26,5 +30,21 @@ public class Subtask extends Task {
                 ", status='" + this.getStatus() + '\'' +
                 ", epicId=" + epicId +
                 '}';
+    }
+
+    public String toCsvString() {
+        return new StringJoiner(",")
+                .add(String.valueOf(getId()))
+                .add(getTaskType().name())
+                .add(getTitle())
+                .add(getDescription())
+                .add(getStatus().name())
+                .add(String.valueOf(epicId))
+                .toString();
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return SUBTASK;
     }
 }

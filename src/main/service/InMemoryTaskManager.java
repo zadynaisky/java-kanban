@@ -12,9 +12,9 @@ import static java.util.stream.Collectors.toSet;
 import static main.model.Status.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Long, Epic> epics = new HashMap<>();
-    private final Map<Long, Task> tasks = new HashMap<>();
-    private final Map<Long, Subtask> subtasks = new HashMap<>();
+    final Map<Long, Epic> epics = new HashMap<>();
+    final Map<Long, Task> tasks = new HashMap<>();
+    final Map<Long, Subtask> subtasks = new HashMap<>();
     private static long nextId = 1;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -230,5 +230,17 @@ public class InMemoryTaskManager implements TaskManager {
                     System.out.println(epic);
                     getEpicSubtasks(epic.getId()).forEach(task -> System.out.println("\t" + task));
                 });
+    }
+
+    public static void setNextId(long nextId) {
+        InMemoryTaskManager.nextId = nextId;
+    }
+
+    public static long getNextId() {
+        return nextId;
+    }
+
+    public Map<Long, Epic> getEpics() {
+        return epics;
     }
 }
