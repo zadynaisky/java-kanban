@@ -1,5 +1,6 @@
 package main.model;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import static main.model.TaskType.EPIC;
 
 public class Epic extends Task {
     private Set<Long> subtasks;
+    private LocalDateTime endDateTime;
 
     public Epic(String title, String description) {
         super(title, description);
@@ -48,5 +50,10 @@ public class Epic extends Task {
     @Override
     public TaskType getTaskType() {
         return EPIC;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return this.endDateTime;
     }
 }

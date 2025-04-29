@@ -1,5 +1,7 @@
 package main.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -11,6 +13,9 @@ public class Task implements Comparable<Task> {
     private String title;
     private String description;
     private Status status;
+
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public Task(String title, String description) {
         this.title = title;
@@ -95,5 +100,25 @@ public class Task implements Comparable<Task> {
                 .add(getStatus().name())
                 .add("")
                 .toString();
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }

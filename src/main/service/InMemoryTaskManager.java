@@ -5,6 +5,8 @@ import main.model.Status;
 import main.model.Subtask;
 import main.model.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
@@ -216,6 +218,18 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(DONE);
         } else
             epic.setStatus(IN_PROGRESS);
+    }
+
+    @Override
+    public void calculateAndSetEpicStartEndTimeAndDuration(Epic epic) {
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        Duration duration = null;
+
+        for (long id : epic.getSubtasks()){
+            
+        }
+
     }
 
     public void printAllTaskAndEpics() {
