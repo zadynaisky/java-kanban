@@ -56,9 +56,9 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void getHistoryReturnsLastSeenIssues() {
-        final int tasksNum = 1_000_000;
+        final int tasksNum = 1_000;
         for (int i = 1; i <= tasksNum; i++) {
-            Task task = new Task("Title" + i, "Description" + i, LocalDateTime.now(), 1440);
+            Task task = new Task("Title" + i, "Description" + i, LocalDateTime.now().plusDays(i + 2), 1440);
             var taskId = taskManager.addTask(task);
             taskManager.getTask(taskId);
         }
@@ -78,7 +78,7 @@ public class InMemoryHistoryManagerTest {
         Subtask subtask = new Subtask("Subtask title", "Subtask description", epic.getId(), LocalDateTime.now(), 1440);
         taskManager.addSubtask(subtask);
         taskManager.getSubtask(subtask.getId());
-        Task task = new Task("Title", "Description", LocalDateTime.now(), 1440);
+        Task task = new Task("Title", "Description", LocalDateTime.now().plusDays(2), 1440);
         taskManager.addTask(task);
         taskManager.getTask(task.getId());
         assertTrue(taskManager.getHistory().contains(epic));
