@@ -1,7 +1,6 @@
 package main.model;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.StringJoiner;
 
 import static main.model.TaskType.SUBTASK;
