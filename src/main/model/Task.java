@@ -17,17 +17,21 @@ public class Task implements Comparable<Task> {
     private Duration duration;
     private LocalDateTime startTime;
 
-    public Task(String title, String description) {
+    public Task(String title, String description, LocalDateTime startTime, long duration) {
         this.title = title;
         this.description = description;
         this.status = NEW;
+        this.startTime = startTime;
+        this.duration = Duration.ofMinutes(duration);
     }
 
-    public Task(long id, String title, String description, Status status) {
+    public Task(long id, String title, String description, Status status, LocalDateTime startTime, long duration) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
+        this.startTime = startTime;
+        this.duration = Duration.ofMinutes(duration);
     }
 
     public void setId(long id) {
@@ -88,6 +92,9 @@ public class Task implements Comparable<Task> {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
+                ", startTime=" + getStartTime() +
+                ", endTime=" + getEndTime() +
+                ", duration=" + getDuration() +
                 '}';
     }
 
@@ -99,6 +106,8 @@ public class Task implements Comparable<Task> {
                 .add(getDescription())
                 .add(getStatus().name())
                 .add("")
+                .add(String.valueOf(getStartTime()))
+                .add(String.valueOf(getDuration().toMinutes()))
                 .toString();
     }
 
@@ -120,5 +129,14 @@ public class Task implements Comparable<Task> {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    public boolean isIntersectWith(Task other) {
+        if (getStartTime() == null || getEndTime() == null || other.getStartTime() == null || other.getEndTime() == null)
+            return false;
+        if ((other.getStartTime().isAfter(getStartTime()) && other.getStartTime().isBefore(getEndTime()))
+                || (other.getEndTime().isAfter(getStartTime()) && other.getEndTime().isBefore(getEndTime())))
+            return true;
+        return false;
     }
 }

@@ -4,6 +4,8 @@ import main.exception.ManagerSaveException;
 import main.model.*;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 
 import static main.model.Status.IN_PROGRESS;
@@ -18,17 +20,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         FileBackedTaskManager firstManager = new FileBackedTaskManager(new File("/home/vidyakina/test.csv"));
-        long firstTaskId = firstManager.addTask(new Task("First task title", "First task description"));
-        long secondTaskId = firstManager.addTask(new Task("Second task title", "Second task description"));
+        long firstTaskId = firstManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
+        long secondTaskId = firstManager.addTask(new Task("Second task title", "Second task description", LocalDateTime.now(), 1440));
         long firstEpicId = firstManager.addEpic(new Epic("First epic title", "First epic description"));
         long firstEpicFirstSubtaskId = firstManager.addSubtask(new Subtask("Epic 1: First Subtask title",
-                "Epic 1: First subtask description", firstEpicId));
+                "Epic 1: First subtask description", firstEpicId, LocalDateTime.now(), 1440));
         firstManager.updateSubtask(new Subtask(firstEpicFirstSubtaskId, "Epic 1: Second Subtask title",
-                "Epic 1: Second subtask description", IN_PROGRESS, firstEpicId));
+                "Epic 1: Second subtask description", IN_PROGRESS, firstEpicId, LocalDateTime.now(), 1440));
         long firstEpicSecondSubtaskId = firstManager.addSubtask(new Subtask("Epic 1: Second Subtask title",
-                "Epic 1: Second subtask description", firstEpicId));
+                "Epic 1: Second subtask description", firstEpicId, LocalDateTime.now(), 1440));
         long firstEpicThirdSubtaskId = firstManager.addSubtask(new Subtask("Epic 1: Third Subtask title",
-                "Epic 1: Third subtask description", firstEpicId));
+                "Epic 1: Third subtask description", firstEpicId, LocalDateTime.now(), 1440));
         long secondEpicId = firstManager.addEpic(new Epic("Second epic title", "Second epic description"));
 
         FileBackedTaskManager secondManager = FileBackedTaskManager.loadFromFile(new File("/home/vidyakina/test.csv"));
@@ -71,6 +73,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     case SUBTASK -> fileBackedTaskManager.subtasks.put(task.getId(), (Subtask) task);
                 }
             }
+            for (Epic epic : fileBackedTaskManager.epics.values()) {
+                fileBackedTaskManager.calculateAndSetEpicStartEndTimeAndDuration(epic);
+            }
         } catch (FileNotFoundException e) {
             throw new ManagerSaveException("Couldn't find file");
         } catch (IOException e) {
@@ -81,7 +86,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public Task fromString(String line) {
-
         String[] parts = line.split(",");
         TaskType taskType = TaskType.valueOf(parts[1]);
 
@@ -92,11 +96,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             case SUBTASK -> {
                 return new Subtask(Long.parseLong(parts[0]), parts[2], parts[3],
-                        Status.valueOf(parts[4]), Long.parseLong(parts[5]));
+                        Status.valueOf(parts[4]), Long.parseLong(parts[5]), LocalDateTime.parse(parts[6], DateTimeFormatter.ISO_DATE_TIME), Long.parseLong(parts[7]));
             }
             default -> {
                 return new Task(Long.parseLong(parts[0]), parts[2], parts[3],
-                        Status.valueOf(parts[4]));
+                        Status.valueOf(parts[4]), LocalDateTime.parse(parts[6], DateTimeFormatter.ISO_DATE_TIME), Long.parseLong(parts[7]));
             }
         }
     }

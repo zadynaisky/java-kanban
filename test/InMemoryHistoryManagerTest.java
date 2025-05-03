@@ -6,6 +6,7 @@ import main.service.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class InMemoryHistoryManagerTest {
     public void getHistoryReturnsOldVersionOfEpicAfterUpdate() {
         Epic oldEpic = new Epic("Old epic title", "Old epic description");
         var epicId = taskManager.addEpic(oldEpic);
-        Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId);
+        Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId, LocalDateTime.now(), 1440);
         taskManager.addSubtask(subtask);
         taskManager.getEpic(epicId);
         Epic newEpic = new Epic(epicId, "New task title", "New task description", IN_PROGRESS, new HashSet<>());
@@ -41,10 +42,10 @@ public class InMemoryHistoryManagerTest {
     public void getHistoryReturnsNewVersionOfSubtaskAfterUpdate() {
         Epic epic = new Epic("Epic title", "Epic description");
         var epicId = taskManager.addEpic(epic);
-        Subtask oldSubtask = new Subtask("Old subtask title", "Old subtask description", epicId);
+        Subtask oldSubtask = new Subtask("Old subtask title", "Old subtask description", epicId, LocalDateTime.now(), 1440);
         var oldSubtaskId = taskManager.addSubtask(oldSubtask);
         taskManager.getSubtask(oldSubtaskId);
-        Subtask newSubtask = new Subtask(oldSubtaskId, "New subtask title", "New subtask description", IN_PROGRESS, epicId);
+        Subtask newSubtask = new Subtask(oldSubtaskId, "New subtask title", "New subtask description", IN_PROGRESS, epicId, LocalDateTime.now(), 1440);
         taskManager.updateSubtask(newSubtask);
         assertEquals(1, taskManager.getHistory().size());
         Subtask subtaskFromHistory = (Subtask) taskManager.getHistory().getFirst();
@@ -57,7 +58,7 @@ public class InMemoryHistoryManagerTest {
     public void getHistoryReturnsLastSeenIssues() {
         final int tasksNum = 1_000_000;
         for (int i = 1; i <= tasksNum; i++) {
-            Task task = new Task("Title" + i, "Description" + i);
+            Task task = new Task("Title" + i, "Description" + i, LocalDateTime.now(), 1440);
             var taskId = taskManager.addTask(task);
             taskManager.getTask(taskId);
         }
@@ -74,10 +75,10 @@ public class InMemoryHistoryManagerTest {
         Epic epic = new Epic("Epic title", "Epic description");
         taskManager.addEpic(epic);
         taskManager.getEpic(epic.getId());
-        Subtask subtask = new Subtask("Subtask title", "Subtask description", epic.getId());
+        Subtask subtask = new Subtask("Subtask title", "Subtask description", epic.getId(), LocalDateTime.now(), 1440);
         taskManager.addSubtask(subtask);
         taskManager.getSubtask(subtask.getId());
-        Task task = new Task("Title", "Description");
+        Task task = new Task("Title", "Description", LocalDateTime.now(), 1440);
         taskManager.addTask(task);
         taskManager.getTask(task.getId());
         assertTrue(taskManager.getHistory().contains(epic));

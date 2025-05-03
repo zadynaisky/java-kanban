@@ -1,9 +1,6 @@
 package main.service;
 
-import main.model.Epic;
-import main.model.Status;
-import main.model.Subtask;
-import main.model.Task;
+import main.model.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -19,6 +16,9 @@ public class InMemoryTaskManager implements TaskManager {
     final Map<Long, Subtask> subtasks = new HashMap<>();
     private static long nextId = 1;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
+    private final Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(
+            Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparing(Task::getId));
 
     @Override
     public long addEpic(Epic epic) {
@@ -71,6 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllEpics() {
+        subtasks.values().forEach(prioritizedTasks::remove);
         epics.clear();
         subtasks.clear();
         var idsToDelete = historyManager
@@ -84,8 +85,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public long addTask(Task task) {
+        if (taskIsIntersectWithOthersTasks(task))
+            throw new IllegalArgumentException("Task interval intersect with existed task");
         task.setId(nextId++);
         tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
         return task.getId();
     }
 
@@ -104,17 +108,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+        if (taskIsIntersectWithOthersTasks(task))
+            throw new IllegalArgumentException("Task interval intersect with existed task");
         tasks.put(task.getId(), task);
     }
 
     @Override
     public void removeTaskById(long id) {
+        prioritizedTasks.remove(tasks.get(id));
         tasks.remove(id);
         historyManager.remove(id);
     }
 
     @Override
     public void removeAllTasks() {
+        tasks.values().forEach(prioritizedTasks::remove);
         var idsToDelete = historyManager
                 .getHistory()
                 .stream()
@@ -131,6 +139,8 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Only subtasks can be added");
             return -1;
         }
+        if (taskIsIntersectWithOthersTasks(subtask))
+            throw new IllegalArgumentException("Task interval intersect with existed task");
 
         var epicId = subtask.getEpicId();
         if (epics.containsKey(epicId)) {
@@ -138,6 +148,8 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.put(subtask.getId(), subtask);
             epics.get(epicId).addSubtask(subtask.getId());
             calculateAndSetEpicStatus(epics.get(epicId));
+            calculateAndSetEpicStartEndTimeAndDuration(epics.get(epicId));
+            prioritizedTasks.add(subtask);
             return subtask.getId();
         } else {
             System.out.println("Subtask wasn't added. Couldn't find epic with id " + subtask.getEpicId());
@@ -161,6 +173,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         var epicId = subtask.getEpicId();
+
+        if (taskIsIntersectWithOthersTasks(subtask))
+            throw new IllegalArgumentException("Task interval intersect with existed task");
+
         if (!epics.containsKey(epicId)) {
             System.out.println("Subtask wasn't updated. Couldn't find epic with id " + epicId);
             return;
@@ -173,15 +189,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeSubtaskById(long id) {
+        prioritizedTasks.remove(subtasks.get(id));
         var epic = epics.get(subtasks.get(id).getEpicId());
         subtasks.remove(id);
         historyManager.remove(id);
         epic.removeSubtask(id);
         calculateAndSetEpicStatus(epic);
+        calculateAndSetEpicStartEndTimeAndDuration(epic);
     }
 
     @Override
     public void removeAllSubtasks() {
+        subtasks.values().forEach(prioritizedTasks::remove);
         var idsToDelete = historyManager
                 .getHistory()
                 .stream()
@@ -226,10 +245,19 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime endTime = null;
         Duration duration = null;
 
-        for (long id : epic.getSubtasks()){
-            
+        for (long subtaskId : epic.getSubtasks()){
+            if (subtasks.containsKey(subtaskId)){
+                Subtask subtask = subtasks.get(subtaskId);
+                if (startTime == null || subtask.getStartTime().isBefore(startTime))
+                    startTime = subtask.getStartTime();
+                if (endTime == null || subtask.getEndTime().isAfter(endTime))
+                    endTime = subtask.getEndTime();
+            }
         }
-
+        epic.setStartTime(startTime);
+        epic.setEndDateTime(endTime);
+        if (startTime != null && endTime != null)
+            duration = Duration.between(startTime, endTime);
     }
 
     public void printAllTaskAndEpics() {
@@ -256,5 +284,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Map<Long, Epic> getEpics() {
         return epics;
+    }
+
+    public Set<Task> getPrioritizedTasks() {
+        return prioritizedTasks;
+    }
+
+    public boolean taskIsIntersectWithOthersTasks(Task task) {
+        if (task.getStartTime() == null || task.getEndTime() == null)
+            return false;
+        return  getPrioritizedTasks()
+                .stream()
+                .filter(x -> x.getId() != task.getId())
+                .filter(x -> x.isIntersectWith(task))
+                .findAny()
+                .isPresent();
     }
 }

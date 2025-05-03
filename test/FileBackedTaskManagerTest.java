@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,15 +50,15 @@ class FileBackedTaskManagerTest {
         }
         fileBackedTaskManager = new FileBackedTaskManager(testFile);
 
-        long firstTaskId = fileBackedTaskManager.addTask(new Task("First task title", "First task description"));
-        long secondTaskId = fileBackedTaskManager.addTask(new Task("Second task title", "Second task description"));
+        long firstTaskId = fileBackedTaskManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
+        long secondTaskId = fileBackedTaskManager.addTask(new Task("Second task title", "Second task description", LocalDateTime.now(), 1440));
         long firstEpicId = fileBackedTaskManager.addEpic(new Epic("First epic title", "First epic description"));
         long firstEpicFirstSubtaskId = fileBackedTaskManager.addSubtask(new Subtask("Epic 1: First Subtask title",
-                "Epic 1: First subtask description", firstEpicId));
+                "Epic 1: First subtask description", firstEpicId, LocalDateTime.now(), 1440));
         long firstEpicSecondSubtaskId = fileBackedTaskManager.addSubtask(new Subtask("Epic 1: Second Subtask title",
-                "Epic 1: Second subtask description", firstEpicId));
+                "Epic 1: Second subtask description", firstEpicId, LocalDateTime.now(), 1440));
         long firstEpicThirdSubtaskId = fileBackedTaskManager.addSubtask(new Subtask("Epic 1: Third Subtask title",
-                "Epic 1: Third subtask description", firstEpicId));
+                "Epic 1: Third subtask description", firstEpicId, LocalDateTime.now(), 1440));
         long secondEpicId = fileBackedTaskManager.addEpic(new Epic("Second epic title", "Second epic description"));
 
         System.out.println(fileBackedTaskManager.getNextId());
