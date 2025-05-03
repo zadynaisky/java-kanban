@@ -1,6 +1,9 @@
 package main.service;
 
-import main.model.*;
+import main.model.Epic;
+import main.model.Status;
+import main.model.Subtask;
+import main.model.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -17,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
     private static long nextId = 1;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     private final Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(
-            Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+                    Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparing(Task::getId));
 
     @Override
@@ -245,8 +248,8 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime endTime = null;
         Duration duration = null;
 
-        for (long subtaskId : epic.getSubtasks()){
-            if (subtasks.containsKey(subtaskId)){
+        for (long subtaskId : epic.getSubtasks()) {
+            if (subtasks.containsKey(subtaskId)) {
                 Subtask subtask = subtasks.get(subtaskId);
                 if (startTime == null || subtask.getStartTime().isBefore(startTime))
                     startTime = subtask.getStartTime();
@@ -293,7 +296,7 @@ public class InMemoryTaskManager implements TaskManager {
     public boolean taskIsIntersectWithOthersTasks(Task task) {
         if (task.getStartTime() == null || task.getEndTime() == null)
             return false;
-        return  getPrioritizedTasks()
+        return getPrioritizedTasks()
                 .stream()
                 .filter(x -> x.getId() != task.getId())
                 .filter(x -> x.isIntersectWith(task))
