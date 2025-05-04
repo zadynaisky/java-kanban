@@ -113,6 +113,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         if (taskIsIntersectWithOthersTasks(task))
             throw new IllegalArgumentException("Task interval intersect with existed task");
+        if (prioritizedTasks.contains(task))
+            prioritizedTasks.remove(task);
+        prioritizedTasks.add(task);
         tasks.put(task.getId(), task);
     }
 
@@ -184,6 +187,9 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Subtask wasn't updated. Couldn't find epic with id " + epicId);
             return;
         }
+        if (prioritizedTasks.contains(subtask))
+            prioritizedTasks.remove(subtask);
+        prioritizedTasks.add(subtask);
         subtasks.put(subtask.getId(), subtask);
         var epic = epics.get(epicId);
         epic.addSubtask(subtask.getId());
