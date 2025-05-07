@@ -1,5 +1,6 @@
 package main.model;
 
+import java.time.LocalDateTime;
 import java.util.StringJoiner;
 
 import static main.model.TaskType.SUBTASK;
@@ -7,13 +8,13 @@ import static main.model.TaskType.SUBTASK;
 public class Subtask extends Task {
     private final long epicId;
 
-    public Subtask(String title, String description, long epicId) {
-        super(title, description);
+    public Subtask(String title, String description, long epicId, LocalDateTime startTime, long duration) {
+        super(title, description, startTime, duration);
         this.epicId = epicId;
     }
 
-    public Subtask(long id, String title, String description, Status status, long epicId) {
-        super(id, title, description, status);
+    public Subtask(long id, String title, String description, Status status, long epicId, LocalDateTime startTime, long duration) {
+        super(id, title, description, status, startTime, duration);
         this.epicId = epicId;
     }
 
@@ -29,6 +30,8 @@ public class Subtask extends Task {
                 ", description='" + this.getDescription() + '\'' +
                 ", status='" + this.getStatus() + '\'' +
                 ", epicId=" + epicId +
+                ", startTime=" + super.getStartTime() +
+                ", duration=" + super.getDuration() +
                 '}';
     }
 
@@ -40,6 +43,8 @@ public class Subtask extends Task {
                 .add(getDescription())
                 .add(getStatus().name())
                 .add(String.valueOf(epicId))
+                .add(String.valueOf(getStartTime()))
+                .add(String.valueOf(getDuration().toMinutes()))
                 .toString();
     }
 

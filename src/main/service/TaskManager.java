@@ -46,4 +46,6 @@ public interface TaskManager {
     void removeAllSubtasks();
 
     List<Task> getHistory();
+
+    void calculateAndSetEpicStartEndTimeAndDuration(Epic epic);
 }
