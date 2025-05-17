@@ -1,17 +1,12 @@
 package main.handler;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import main.adapter.DurationAdapter;
-import main.adapter.LocalDateTimeAdapter;
 import main.utils.GsonFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 public abstract class BaseHttpHandler implements HttpHandler {
     protected final Gson GSON = GsonFactory.getGson();
