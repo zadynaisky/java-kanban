@@ -26,8 +26,13 @@ public class HttpTaskServer {
         httpServer.createContext("/prioritized", new PrioritizedHandler(taskManager));
     }
 
-    public void start() { httpServer.start(); }
-    public void stop() { httpServer.stop(0); }
+    public void start() {
+        httpServer.start();
+    }
+
+    public void stop() {
+        httpServer.stop(0);
+    }
 
 
     public static void main(String[] args) throws IOException {
