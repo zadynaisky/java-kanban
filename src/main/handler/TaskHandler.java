@@ -48,7 +48,7 @@ public class TaskHandler extends BaseHttpHandler {
     private void postTask(HttpExchange httpExchange) throws IOException {
         var requestBody = new String(httpExchange.getRequestBody().readAllBytes());
         try {
-            var task = GSON.fromJson(requestBody, Task.class);
+            var task = gson.fromJson(requestBody, Task.class);
             if (taskManager.getTaskMap().containsKey(task.getId())) {
                 taskManager.updateTask(task);
                 sendText(httpExchange, "Task was updated", 201);
@@ -66,14 +66,14 @@ public class TaskHandler extends BaseHttpHandler {
 
     private void getTask(HttpExchange httpExchange, int id) throws IOException {
         try {
-            sendText(httpExchange, GSON.toJson(taskManager.getTask(id)), 200);
+            sendText(httpExchange, gson.toJson(taskManager.getTask(id)), 200);
         } catch (NotFoundException e) {
             sendNotFound(httpExchange);
         }
     }
 
     private void getTasks(HttpExchange httpExchange) throws IOException {
-        sendText(httpExchange, GSON.toJson(taskManager.getAllTasks()), 200);
+        sendText(httpExchange, gson.toJson(taskManager.getAllTasks()), 200);
     }
 
     private void removeTask(HttpExchange httpExchange, int id) throws IOException {

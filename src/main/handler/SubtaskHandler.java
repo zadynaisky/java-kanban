@@ -48,7 +48,7 @@ public class SubtaskHandler extends BaseHttpHandler {
         var requestBody = new String(httpExchange.getRequestBody().readAllBytes());
 
         try {
-            var subtask = GSON.fromJson(requestBody, Subtask.class);
+            var subtask = gson.fromJson(requestBody, Subtask.class);
             if (taskManager.getSubtaskMap().containsKey(subtask.getId())) {
                 taskManager.updateSubtask(subtask);
                 sendText(httpExchange, "Subtask was updated", 201);
@@ -66,14 +66,14 @@ public class SubtaskHandler extends BaseHttpHandler {
 
     private void getSubtask(HttpExchange httpExchange, int id) throws IOException {
         try {
-            sendText(httpExchange, GSON.toJson(taskManager.getSubtask(id)), 200);
+            sendText(httpExchange, gson.toJson(taskManager.getSubtask(id)), 200);
         } catch (NotFoundException e) {
             sendNotFound(httpExchange);
         }
     }
 
     private void getSubtasks(HttpExchange httpExchange) throws IOException {
-        String jsonSubtasks = GSON.toJson(taskManager.getAllSubtasks());
+        String jsonSubtasks = gson.toJson(taskManager.getAllSubtasks());
         sendText(httpExchange, jsonSubtasks, 200);
     }
 

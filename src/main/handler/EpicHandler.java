@@ -55,7 +55,7 @@ public class EpicHandler extends BaseHttpHandler {
     private void postEpic(HttpExchange httpExchange) throws IOException {
         var requestBody = new String(httpExchange.getRequestBody().readAllBytes());
         try {
-            var epic = GSON.fromJson(requestBody, Epic.class);
+            var epic = gson.fromJson(requestBody, Epic.class);
             if (taskManager.getEpicMap().containsKey(epic.getId())) {
                 taskManager.updateEpic(epic);
                 sendText(httpExchange, "Epic was updated", 201);
@@ -73,20 +73,20 @@ public class EpicHandler extends BaseHttpHandler {
 
     private void getEpic(HttpExchange httpExchange, int id) throws IOException {
         try {
-            sendText(httpExchange, GSON.toJson(taskManager.getEpic(id)), 200);
+            sendText(httpExchange, gson.toJson(taskManager.getEpic(id)), 200);
         } catch (NotFoundException e) {
             sendNotFound(httpExchange);
         }
     }
 
     private void getEpics(HttpExchange httpExchange) throws IOException {
-        String jsonEpics = GSON.toJson(taskManager.getAllEpics());
+        String jsonEpics = gson.toJson(taskManager.getAllEpics());
         sendText(httpExchange, jsonEpics, 200);
     }
 
     private void getEpicSubtasks(HttpExchange httpExchange, int id) throws IOException {
         if (taskManager.getEpicMap().containsKey(id))
-            sendText(httpExchange, GSON.toJson(taskManager.getEpic(id).getSubtasks()), 200);
+            sendText(httpExchange, gson.toJson(taskManager.getEpic(id).getSubtasks()), 200);
         else
             sendNotFound(httpExchange);
     }

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public abstract class BaseHttpHandler implements HttpHandler {
-    protected final Gson GSON = GsonFactory.getGson();
+    protected final Gson gson = GsonFactory.getGson();
 
     protected void sendText(HttpExchange httpExchange, String text, int code) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);

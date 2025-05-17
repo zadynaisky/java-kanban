@@ -33,6 +33,6 @@ public class PrioritizedHandler extends BaseHttpHandler{
     }
 
     private void getPrioritized(HttpExchange httpExchange) throws IOException {
-        sendText(httpExchange, GSON.toJson(taskManager.getPrioritizedTasks()), 200);
+        sendText(httpExchange, gson.toJson(taskManager.getPrioritizedTasks()), 200);
     }
 }

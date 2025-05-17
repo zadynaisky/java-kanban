@@ -33,6 +33,6 @@ public class HistoryHandler extends BaseHttpHandler{
     }
 
     private void getHistory(HttpExchange httpExchange) throws IOException {
-        sendText(httpExchange, GSON.toJson(taskManager.getHistory()), 200);
+        sendText(httpExchange, gson.toJson(taskManager.getHistory()), 200);
     }
 }
