@@ -1,5 +1,7 @@
 package main.service;
 
+import main.exception.IntersectionException;
+import main.exception.NotFoundException;
 import main.model.Epic;
 import main.model.Status;
 import main.model.Subtask;
@@ -33,8 +35,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpic(long id) {
         var epic = epics.get(id);
-        if (epic != null)
-            historyManager.add(epic);
+        if (epic == null)
+            throw new NotFoundException("There is no epic with id " + id);
+        historyManager.add(epic);
         return epic;
     }
 
@@ -89,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public long addTask(Task task) {
         if (taskIsIntersectWithOthersTasks(task))
-            throw new IllegalArgumentException("Task interval intersect with existed task");
+            throw new IntersectionException("Task interval intersect with existed task");
         task.setId(nextId++);
         tasks.put(task.getId(), task);
         prioritizedTasks.add(task);
@@ -99,8 +102,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(long id) {
         var task = tasks.get(id);
-        if (task != null)
-            historyManager.add(task);
+        if (task == null)
+            throw new NotFoundException("There is no task with id " + id);
+        historyManager.add(task);
         return task;
     }
 
@@ -112,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (taskIsIntersectWithOthersTasks(task))
-            throw new IllegalArgumentException("Task interval intersect with existed task");
+            throw new IntersectionException("Task interval intersect with existed task");
         if (prioritizedTasks.contains(task))
             prioritizedTasks.remove(task);
         prioritizedTasks.add(task);
@@ -146,7 +150,7 @@ public class InMemoryTaskManager implements TaskManager {
             return -1;
         }
         if (taskIsIntersectWithOthersTasks(subtask))
-            throw new IllegalArgumentException("Task interval intersect with existed task");
+            throw new IntersectionException("Task interval intersect with existed task");
 
         var epicId = subtask.getEpicId();
         if (epics.containsKey(epicId)) {
@@ -166,8 +170,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtask(long id) {
         var subtask = subtasks.get(id);
-        if (subtask != null)
-            historyManager.add(subtask);
+        if (subtask == null)
+            throw new NotFoundException("There is no subtask with id " + id);
+        historyManager.add(subtask);
         return subtask;
     }
 
@@ -181,7 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
         var epicId = subtask.getEpicId();
 
         if (taskIsIntersectWithOthersTasks(subtask))
-            throw new IllegalArgumentException("Task interval intersect with existed task");
+            throw new IntersectionException("Task interval intersect with existed task");
 
         if (!epics.containsKey(epicId)) {
             System.out.println("Subtask wasn't updated. Couldn't find epic with id " + epicId);
@@ -269,6 +274,21 @@ public class InMemoryTaskManager implements TaskManager {
             duration = Duration.between(startTime, endTime);
     }
 
+    @Override
+    public Map<Long, Epic> getEpicMap() {
+        return epics;
+    }
+
+    @Override
+    public Map<Long, Task> getTaskMap() {
+        return tasks;
+    }
+
+    @Override
+    public Map<Long, Subtask> getSubtaskMap() {
+        return subtasks;
+    }
+
     public void printAllTaskAndEpics() {
         System.out.println("====================");
         System.out.println("Tasks: ");
@@ -295,6 +315,7 @@ public class InMemoryTaskManager implements TaskManager {
         return epics;
     }
 
+    @Override
     public Set<Task> getPrioritizedTasks() {
         return prioritizedTasks;
     }
