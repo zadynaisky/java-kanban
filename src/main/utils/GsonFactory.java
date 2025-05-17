@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 public class GsonFactory {
     private static Gson gsonInstance;
 
-    private GsonFactory() {}
+    private GsonFactory() {
+    }
 
     public static Gson getGson() {
         if (gsonInstance == null) {
