@@ -1,4 +1,5 @@
-import main.exception.ManagerSaveException;
+import main.exception.IntersectionException;
+import main.exception.NotFoundException;
 import main.model.Epic;
 import main.model.Subtask;
 import main.model.Task;
@@ -10,11 +11,9 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static main.model.Status.*;
-import static main.model.Status.DONE;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public abstract class AbstractTaskManagerTest <T extends TaskManager>{
+public abstract class AbstractTaskManagerTest<T extends TaskManager> {
     T taskManager;
 
     @Test
@@ -67,8 +66,12 @@ public abstract class AbstractTaskManagerTest <T extends TaskManager>{
         Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId, LocalDateTime.now(), 1440);
         var subtaskId = taskManager.addSubtask(subtask);
         taskManager.removeEpicById(epicId);
-        assertNull(taskManager.getEpic(epicId));
-        assertNull(taskManager.getSubtask(subtaskId));
+        assertThrows(NotFoundException.class, () -> {
+            taskManager.getEpic(epicId);
+        }, "Не выбрасывается ошибка, при запросе несуществующего id");
+        assertThrows(NotFoundException.class, () -> {
+            taskManager.getSubtask(subtaskId);
+        }, "Не выбрасывается ошибка, при запросе несуществующего id");
     }
 
     @Test
@@ -78,7 +81,9 @@ public abstract class AbstractTaskManagerTest <T extends TaskManager>{
         Subtask subtask = new Subtask("Subtask title", "Subtask description", epicId, LocalDateTime.now(), 1440);
         var subtaskId = taskManager.addSubtask(subtask);
         taskManager.removeSubtaskById(subtaskId);
-        assertNull(taskManager.getSubtask(subtaskId));
+        assertThrows(NotFoundException.class, () -> {
+            taskManager.getSubtask(subtaskId);
+        }, "Не выбрасывается ошибка, при запросе несуществующего id");
         assertEquals(false, taskManager.getEpic(epicId).getSubtasks().contains(subtask.getId()));
     }
 
@@ -149,7 +154,7 @@ public abstract class AbstractTaskManagerTest <T extends TaskManager>{
 
     @Test
     public void attemptToAddTwoTasksWithIntersectingIntervalReturnsError() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IntersectionException.class, () -> {
             Task task = new Task("Task 1 title", "Task 1 description", LocalDateTime.now(), 1440);
             var task1Id = taskManager.addTask(task);
             Task task2 = new Task("Task 2 title", "Task 2 description", LocalDateTime.now(), 1000);
