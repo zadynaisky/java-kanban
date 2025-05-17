@@ -9,7 +9,7 @@ import java.io.IOException;
 import static main.model.Endpoint.GET_LIST;
 import static main.model.Endpoint.UNKNOWN;
 
-public class PrioritizedHandler extends BaseHttpHandler{
+public class PrioritizedHandler extends BaseHttpHandler {
     private final TaskManager taskManager;
 
     public PrioritizedHandler(TaskManager taskManager) {

@@ -45,8 +45,12 @@ public class EpicHandler extends BaseHttpHandler {
                     else
                         return GET_EPIC_SUBTASKS;
                 }
-                case "POST" -> { return POST; }
-                case "DELETE" -> { return DELETE; }
+                case "POST" -> {
+                    return POST;
+                }
+                case "DELETE" -> {
+                    return DELETE;
+                }
             }
         }
         return UNKNOWN;
@@ -59,8 +63,7 @@ public class EpicHandler extends BaseHttpHandler {
             if (taskManager.getEpicMap().containsKey(epic.getId())) {
                 taskManager.updateEpic(epic);
                 sendText(httpExchange, "Epic was updated", 201);
-            }
-            else{
+            } else {
                 taskManager.addEpic(epic);
                 sendText(httpExchange, "Epic was created", 201);
             }
@@ -95,8 +98,7 @@ public class EpicHandler extends BaseHttpHandler {
         if (taskManager.getEpicMap().containsKey(id)) {
             taskManager.removeEpicById(id);
             sendText(httpExchange, "Epic was removed", 200);
-        }
-        else
+        } else
             sendNotFound(httpExchange);
     }
 }

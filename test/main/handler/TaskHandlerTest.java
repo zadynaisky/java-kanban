@@ -7,7 +7,6 @@ import main.model.Task;
 import main.service.InMemoryTaskManager;
 import main.service.TaskManager;
 import main.utils.GsonFactory;
-import main.utils.TaskListTypeToken;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,8 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class TaskHandlerTest {
 
@@ -66,7 +66,7 @@ class TaskHandlerTest {
     @Test
     public void getTaskReturns200() throws IOException, InterruptedException {
         taskManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
-        Task task2 =new Task("Second task title", "Second task description", LocalDateTime.now().plusDays(1), 1440);
+        Task task2 = new Task("Second task title", "Second task description", LocalDateTime.now().plusDays(1), 1440);
         long secondTaskId = taskManager.addTask(task2);
         taskManager.addTask(new Task("Third task title", "Third task description", LocalDateTime.now().plusDays(2), 1440));
 
@@ -110,7 +110,8 @@ class TaskHandlerTest {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        List<Task> tasksFromResponse = gson.fromJson(response.body(), new TypeToken<List<Task>>() {}.getType());
+        List<Task> tasksFromResponse = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
 
         assertEquals(200, response.statusCode());
         assertEquals(3, tasksFromManager.size(), "Incorrect number of tasks");

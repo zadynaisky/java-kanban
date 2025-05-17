@@ -36,9 +36,15 @@ public class SubtaskHandler extends BaseHttpHandler {
         String[] paths = requestPath.split("/");
         if (paths.length <= 3 && paths[1].equals("subtasks")) {
             switch (requestMethod) {
-                case "GET" -> { return (paths.length == 2) ? GET_LIST : GET; }
-                case "POST" -> { return POST; }
-                case "DELETE" -> { return DELETE; }
+                case "GET" -> {
+                    return (paths.length == 2) ? GET_LIST : GET;
+                }
+                case "POST" -> {
+                    return POST;
+                }
+                case "DELETE" -> {
+                    return DELETE;
+                }
             }
         }
         return UNKNOWN;
@@ -52,8 +58,7 @@ public class SubtaskHandler extends BaseHttpHandler {
             if (taskManager.getSubtaskMap().containsKey(subtask.getId())) {
                 taskManager.updateSubtask(subtask);
                 sendText(httpExchange, "Subtask was updated", 201);
-            }
-            else{
+            } else {
                 taskManager.addSubtask(subtask);
                 sendText(httpExchange, "Subtask was created", 201);
             }
@@ -81,8 +86,7 @@ public class SubtaskHandler extends BaseHttpHandler {
         if (taskManager.getSubtaskMap().containsKey(id)) {
             taskManager.removeSubtaskById(id);
             sendText(httpExchange, "Subtask was removed", 200);
-        }
-        else
+        } else
             sendNotFound(httpExchange);
     }
 }

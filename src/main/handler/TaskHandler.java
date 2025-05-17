@@ -37,9 +37,15 @@ public class TaskHandler extends BaseHttpHandler {
         String[] paths = requestPath.split("/");
         if (paths.length <= 3 && paths[1].equals("tasks")) {
             switch (requestMethod) {
-                case "GET" -> { return (paths.length == 2) ? GET_LIST : GET; }
-                case "POST" -> { return POST; }
-                case "DELETE" -> { return DELETE; }
+                case "GET" -> {
+                    return (paths.length == 2) ? GET_LIST : GET;
+                }
+                case "POST" -> {
+                    return POST;
+                }
+                case "DELETE" -> {
+                    return DELETE;
+                }
             }
         }
         return UNKNOWN;
@@ -52,8 +58,7 @@ public class TaskHandler extends BaseHttpHandler {
             if (taskManager.getTaskMap().containsKey(task.getId())) {
                 taskManager.updateTask(task);
                 sendText(httpExchange, "Task was updated", 201);
-            }
-            else{
+            } else {
                 taskManager.addTask(task);
                 sendText(httpExchange, "Task was created", 201);
             }
@@ -77,11 +82,10 @@ public class TaskHandler extends BaseHttpHandler {
     }
 
     private void removeTask(HttpExchange httpExchange, int id) throws IOException {
-        if (taskManager.getTaskMap().containsKey(id)){
+        if (taskManager.getTaskMap().containsKey(id)) {
             taskManager.removeTaskById(id);
             sendText(httpExchange, "Task was deleted", 200);
-        }
-        else
+        } else
             sendNotFound(httpExchange);
     }
 }
