@@ -110,8 +110,7 @@ class TaskHandlerTest {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        List<Task> tasksFromResponse = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
-        }.getType());
+        List<Task> tasksFromResponse = gson.fromJson(response.body(), new TypeToken<List<Task>>() {}.getType());
 
         Set<Task> fromManager = new HashSet<>(taskManager.getAllTasks());
         Set<Task> fromResponse = new HashSet<>(tasksFromResponse);
