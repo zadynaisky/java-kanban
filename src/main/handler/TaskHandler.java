@@ -82,10 +82,6 @@ public class TaskHandler extends BaseHttpHandler {
     }
 
     private void removeTask(HttpExchange httpExchange, long id) throws IOException {
-        System.out.println("Deleting task " + id);
-        System.out.println(taskManager.getAllTasks());
-        taskManager.getTaskMap().entrySet().stream().forEach(entry -> System.out.println(entry.getKey() == id));
-
         if (taskManager.getTaskMap().containsKey(id)) {
             taskManager.removeTaskById(id);
             sendText(httpExchange, "Task was deleted", 200);

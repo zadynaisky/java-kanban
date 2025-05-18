@@ -17,10 +17,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TaskHandlerTest {
 
@@ -102,7 +103,6 @@ class TaskHandlerTest {
         taskManager.addTask(new Task("Second task title", "Second task description", LocalDateTime.now().plusDays(1), 1440));
         taskManager.addTask(new Task("Third task title", "Third task description", LocalDateTime.now().plusDays(2), 1440));
 
-        List<Task> tasksFromManager = taskManager.getAllTasks();
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks"))
@@ -113,7 +113,30 @@ class TaskHandlerTest {
         List<Task> tasksFromResponse = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
         }.getType());
 
+        Set<Task> fromManager = new HashSet<>(taskManager.getAllTasks());
+        Set<Task> fromResponse = new HashSet<>(tasksFromResponse);
+
         assertEquals(200, response.statusCode());
-        assertEquals(3, tasksFromManager.size(), "Incorrect number of tasks");
+        assertEquals(fromManager.size(), fromResponse.size(), "Incorrect number of tasks");
+        assertTrue(fromManager.containsAll(fromResponse), "Tasks in the manager and in the API do not match");
+        assertTrue(fromResponse.containsAll(fromManager), "Tasks in the manager and in the API do not match ");
+    }
+
+    @Test
+    public void deleteTaskDeletesTheTaskAndReturnsCode200() throws IOException, InterruptedException {
+        taskManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
+        long id = taskManager.addTask(new Task("Second task title", "Second task description", LocalDateTime.now().plusDays(1), 1440));
+        taskManager.addTask(new Task("Third task title", "Third task description", LocalDateTime.now().plusDays(2), 1440));
+        assertEquals(3, taskManager.getAllTasks().size(), "Incorrect number of tasks");
+
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(URI.create("http://localhost:8080/tasks/" + id))
+                .DELETE()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+        assertEquals(2, taskManager.getAllTasks().size(), "Incorrect number of tasks");
     }
 }
