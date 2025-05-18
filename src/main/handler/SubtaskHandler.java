@@ -69,7 +69,7 @@ public class SubtaskHandler extends BaseHttpHandler {
         }
     }
 
-    private void getSubtask(HttpExchange httpExchange, int id) throws IOException {
+    private void getSubtask(HttpExchange httpExchange, long id) throws IOException {
         try {
             sendText(httpExchange, gson.toJson(taskManager.getSubtask(id)), 200);
         } catch (NotFoundException e) {
@@ -82,7 +82,7 @@ public class SubtaskHandler extends BaseHttpHandler {
         sendText(httpExchange, jsonSubtasks, 200);
     }
 
-    private void removeSubtask(HttpExchange httpExchange, int id) throws IOException {
+    private void removeSubtask(HttpExchange httpExchange, long id) throws IOException {
         if (taskManager.getSubtaskMap().containsKey(id)) {
             taskManager.removeSubtaskById(id);
             sendText(httpExchange, "Subtask was removed", 200);

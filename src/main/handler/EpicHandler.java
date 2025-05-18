@@ -74,7 +74,7 @@ public class EpicHandler extends BaseHttpHandler {
         }
     }
 
-    private void getEpic(HttpExchange httpExchange, int id) throws IOException {
+    private void getEpic(HttpExchange httpExchange, long id) throws IOException {
         try {
             sendText(httpExchange, gson.toJson(taskManager.getEpic(id)), 200);
         } catch (NotFoundException e) {
@@ -87,14 +87,14 @@ public class EpicHandler extends BaseHttpHandler {
         sendText(httpExchange, jsonEpics, 200);
     }
 
-    private void getEpicSubtasks(HttpExchange httpExchange, int id) throws IOException {
+    private void getEpicSubtasks(HttpExchange httpExchange, long id) throws IOException {
         if (taskManager.getEpicMap().containsKey(id))
             sendText(httpExchange, gson.toJson(taskManager.getEpic(id).getSubtasks()), 200);
         else
             sendNotFound(httpExchange);
     }
 
-    private void removeEpic(HttpExchange httpExchange, int id) throws IOException {
+    private void removeEpic(HttpExchange httpExchange, long id) throws IOException {
         if (taskManager.getEpicMap().containsKey(id)) {
             taskManager.removeEpicById(id);
             sendText(httpExchange, "Epic was removed", 200);
