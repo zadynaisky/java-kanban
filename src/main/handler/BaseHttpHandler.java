@@ -3,6 +3,7 @@ package main.handler;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import main.service.TaskManager;
 import main.utils.GsonFactory;
 
 import java.io.IOException;
@@ -10,6 +11,12 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class BaseHttpHandler implements HttpHandler {
     protected final Gson gson = GsonFactory.getGson();
+    protected final TaskManager taskManager;
+
+    public BaseHttpHandler(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
 
     protected void sendText(HttpExchange httpExchange, String text, int code) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);

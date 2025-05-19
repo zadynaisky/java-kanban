@@ -10,10 +10,9 @@ import static main.model.Endpoint.GET_LIST;
 import static main.model.Endpoint.UNKNOWN;
 
 public class PrioritizedHandler extends BaseHttpHandler {
-    private final TaskManager taskManager;
 
     public PrioritizedHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override

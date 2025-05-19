@@ -13,10 +13,9 @@ import java.io.IOException;
 import static main.model.Endpoint.*;
 
 public class TaskHandler extends BaseHttpHandler {
-    private final TaskManager taskManager;
 
     public TaskHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override
