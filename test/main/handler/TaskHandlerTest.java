@@ -3,7 +3,8 @@ package main.handler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import main.HttpTaskServer;
-import main.model.Task;
+import main.model.Epic;
+import main.model.Subtask;
 import main.service.InMemoryTaskManager;
 import main.service.TaskManager;
 import main.utils.GsonFactory;
@@ -46,51 +47,53 @@ class TaskHandlerTest {
     }
 
     @Test
-    public void addTaskReturns200() throws IOException, InterruptedException {
-        Task task = new Task("First task title", "First task description", LocalDateTime.now(), 1440);
+    public void addSubtaskReturns200() throws IOException, InterruptedException {
+        var epicId = taskManager.addEpic(new Epic("First epic title", "First Epic Description"));
+        Subtask task = new Subtask("First task title", "First task description", epicId, LocalDateTime.now(), 1440);
         HttpRequest request = HttpRequest
                 .newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks"))
+                .uri(URI.create("http://localhost:8080/subtasks"))
                 .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task)))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(201, response.statusCode());
-        List<Task> tasksFromManager = taskManager.getAllTasks();
+        List<Subtask> subtasksFromManager = taskManager.getAllSubtasks();
 
-        assertNotNull(tasksFromManager, "Empty list of tasks");
-        assertEquals(1, tasksFromManager.size(), "Incorrect number of tasks");
-        assertEquals("First task title", tasksFromManager.get(0).getTitle(), "Incorrect task title");
-        assertEquals("First task description", tasksFromManager.get(0).getDescription(), "Incorrect task description");
+        assertNotNull(subtasksFromManager, "Empty list of tasks");
+        assertEquals(1, subtasksFromManager.size(), "Incorrect number of tasks");
+        assertEquals("First task title", subtasksFromManager.get(0).getTitle(), "Incorrect task title");
+        assertEquals("First task description", subtasksFromManager.get(0).getDescription(), "Incorrect task description");
     }
 
     @Test
-    public void getTaskReturns200() throws IOException, InterruptedException {
-        taskManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
-        Task task2 = new Task("Second task title", "Second task description", LocalDateTime.now().plusDays(1), 1440);
-        long secondTaskId = taskManager.addTask(task2);
-        taskManager.addTask(new Task("Third task title", "Third task description", LocalDateTime.now().plusDays(2), 1440));
+    public void getSubtaskReturns200() throws IOException, InterruptedException {
+        var epicId = taskManager.addEpic(new Epic("First epic title", "First Epic Description"));
+        taskManager.addSubtask(new Subtask("First task title", "First task description", epicId, LocalDateTime.now(), 1440));
+        Subtask subtask2 = new Subtask("Second task title", "Second task description", epicId, LocalDateTime.now().plusDays(1), 1440);
+        long secondSubtaskId = taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(new Subtask("Third task title", "Third task description", epicId, LocalDateTime.now().plusDays(2), 1440));
 
-        List<Task> tasksFromManager = taskManager.getAllTasks();
         HttpRequest request = HttpRequest
                 .newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/" + secondTaskId))
+                .uri(URI.create("http://localhost:8080/subtasks/" + secondSubtaskId))
                 .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        Task taskFromResponse = gson.fromJson(response.body(), Task.class);
+        Subtask taskFromResponse = gson.fromJson(response.body(), Subtask.class);
 
         assertEquals(200, response.statusCode());
-        assertEquals(task2, taskFromResponse, "Tasks are not equal");
+        assertEquals(subtask2, taskFromResponse, "Tasks are not equal");
     }
 
     @Test
-    public void getTaskReturns404() throws IOException, InterruptedException {
-        taskManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
+    public void getSubtaskReturns404() throws IOException, InterruptedException {
+        var epicId = taskManager.addEpic(new Epic("First epic title", "First Epic Description"));
+        taskManager.addSubtask(new Subtask("First task title", "First task description", epicId, LocalDateTime.now(), 1440));
         HttpRequest request = HttpRequest
                 .newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/" + 1_000_000))
+                .uri(URI.create("http://localhost:8080/subtasks/" + 1_000_000))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -98,22 +101,23 @@ class TaskHandlerTest {
     }
 
     @Test
-    public void getTasksReturns200() throws IOException, InterruptedException {
-        taskManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
-        taskManager.addTask(new Task("Second task title", "Second task description", LocalDateTime.now().plusDays(1), 1440));
-        taskManager.addTask(new Task("Third task title", "Third task description", LocalDateTime.now().plusDays(2), 1440));
+    public void getSubtasksReturns200() throws IOException, InterruptedException {
+        var epicId = taskManager.addEpic(new Epic("First epic title", "First Epic Description"));
+        taskManager.addSubtask(new Subtask("First task title", "First task description", epicId, LocalDateTime.now(), 1440));
+        taskManager.addSubtask(new Subtask("Second task title", "Second task description", epicId, LocalDateTime.now().plusDays(1), 1440));
+        taskManager.addSubtask(new Subtask("Third task title", "Third task description", epicId, LocalDateTime.now().plusDays(2), 1440));
 
         HttpRequest request = HttpRequest
                 .newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks"))
+                .uri(URI.create("http://localhost:8080/subtasks"))
                 .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        List<Task> tasksFromResponse = gson.fromJson(response.body(), new TypeToken<List<Task>>() {}.getType());
+        List<Subtask> tasksFromResponse = gson.fromJson(response.body(), new TypeToken<List<Subtask>>() {}.getType());
 
-        Set<Task> fromManager = new HashSet<>(taskManager.getAllTasks());
-        Set<Task> fromResponse = new HashSet<>(tasksFromResponse);
+        Set<Subtask> fromManager = new HashSet<>(taskManager.getAllSubtasks());
+        Set<Subtask> fromResponse = new HashSet<>(tasksFromResponse);
 
         assertEquals(200, response.statusCode());
         assertEquals(fromManager.size(), fromResponse.size(), "Incorrect number of tasks");
@@ -122,20 +126,23 @@ class TaskHandlerTest {
     }
 
     @Test
-    public void deleteTaskDeletesTheTaskAndReturnsCode200() throws IOException, InterruptedException {
-        taskManager.addTask(new Task("First task title", "First task description", LocalDateTime.now(), 1440));
-        long id = taskManager.addTask(new Task("Second task title", "Second task description", LocalDateTime.now().plusDays(1), 1440));
-        taskManager.addTask(new Task("Third task title", "Third task description", LocalDateTime.now().plusDays(2), 1440));
-        assertEquals(3, taskManager.getAllTasks().size(), "Incorrect number of tasks");
+    public void deleteSubtaskDeletesTheSubtaskAndReturnsCode200() throws IOException, InterruptedException {
+        var epicId = taskManager.addEpic(new Epic("First epic title", "First Epic Description"));
+        taskManager.addSubtask(new Subtask("First task title", "First task description", epicId, LocalDateTime.now(), 1440));
+        Subtask subtask2 = new Subtask("Second task title", "Second task description", epicId, LocalDateTime.now().plusDays(1), 1440);
+        long secondSubtaskId = taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(new Subtask("Third task title", "Third task description", epicId, LocalDateTime.now().plusDays(2), 1440));
+
+        assertEquals(3, taskManager.getAllSubtasks().size(), "Incorrect number of tasks");
 
         HttpRequest request = HttpRequest
                 .newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/" + id))
+                .uri(URI.create("http://localhost:8080/subtasks/" + secondSubtaskId))
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode());
-        assertEquals(2, taskManager.getAllTasks().size(), "Incorrect number of tasks");
+        assertEquals(2, taskManager.getAllSubtasks().size(), "Incorrect number of tasks");
     }
 }
