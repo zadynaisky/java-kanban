@@ -275,18 +275,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Map<Long, Epic> getEpicMap() {
-        return epics;
+    public boolean containsEpicId(long id) {
+        return epics.containsKey(id);
     }
 
     @Override
-    public Map<Long, Task> getTaskMap() {
-        return tasks;
+    public boolean containsSubtaskId(long id) {
+        return subtasks.containsKey(id);
     }
 
     @Override
-    public Map<Long, Subtask> getSubtaskMap() {
-        return subtasks;
+    public boolean containsTaskId(long id) {
+        return tasks.containsKey(id);
     }
 
     public void printAllTaskAndEpics() {

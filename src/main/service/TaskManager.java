@@ -51,11 +51,11 @@ public interface TaskManager {
 
     void calculateAndSetEpicStartEndTimeAndDuration(Epic epic);
 
-    Map<Long, Epic> getEpicMap();
+    boolean containsEpicId(long id);
 
-    Map<Long, Task> getTaskMap();
+    boolean containsSubtaskId(long id);
 
-    Map<Long, Subtask> getSubtaskMap();
+    boolean containsTaskId(long id);
 
     Set<Task> getPrioritizedTasks();
 }

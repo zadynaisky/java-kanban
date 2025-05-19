@@ -54,7 +54,7 @@ public class SubtaskHandler extends BaseHttpHandler {
 
         try {
             var subtask = gson.fromJson(requestBody, Subtask.class);
-            if (taskManager.getSubtaskMap().containsKey(subtask.getId())) {
+            if (taskManager.containsSubtaskId(subtask.getId())) {
                 taskManager.updateSubtask(subtask);
                 sendText(httpExchange, "Subtask was updated", 201);
             } else {
@@ -82,7 +82,7 @@ public class SubtaskHandler extends BaseHttpHandler {
     }
 
     private void removeSubtask(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.getSubtaskMap().containsKey(id)) {
+        if (taskManager.containsSubtaskId(id)) {
             taskManager.removeSubtaskById(id);
             sendText(httpExchange, "Subtask was removed", 200);
         } else

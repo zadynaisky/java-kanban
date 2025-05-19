@@ -54,7 +54,7 @@ public class TaskHandler extends BaseHttpHandler {
         var requestBody = new String(httpExchange.getRequestBody().readAllBytes());
         try {
             var task = gson.fromJson(requestBody, Task.class);
-            if (taskManager.getTaskMap().containsKey(task.getId())) {
+            if (taskManager.containsTaskId(task.getId())) {
                 taskManager.updateTask(task);
                 sendText(httpExchange, "Task was updated", 201);
             } else {
@@ -81,7 +81,7 @@ public class TaskHandler extends BaseHttpHandler {
     }
 
     private void removeTask(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.getTaskMap().containsKey(id)) {
+        if (taskManager.containsTaskId(id)) {
             taskManager.removeTaskById(id);
             sendText(httpExchange, "Task was deleted", 200);
         } else

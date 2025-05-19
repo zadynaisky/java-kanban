@@ -59,7 +59,7 @@ public class EpicHandler extends BaseHttpHandler {
         var requestBody = new String(httpExchange.getRequestBody().readAllBytes());
         try {
             var epic = gson.fromJson(requestBody, Epic.class);
-            if (taskManager.getEpicMap().containsKey(epic.getId())) {
+            if (taskManager.containsEpicId(epic.getId())) {
                 taskManager.updateEpic(epic);
                 sendText(httpExchange, "Epic was updated", 201);
             } else {
@@ -87,14 +87,14 @@ public class EpicHandler extends BaseHttpHandler {
     }
 
     private void getEpicSubtasks(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.getEpicMap().containsKey(id))
+        if (taskManager.containsEpicId(id))
             sendText(httpExchange, gson.toJson(taskManager.getEpic(id).getSubtasks()), 200);
         else
             sendNotFound(httpExchange);
     }
 
     private void removeEpic(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.getEpicMap().containsKey(id)) {
+        if (taskManager.containsEpicId(id)) {
             taskManager.removeEpicById(id);
             sendText(httpExchange, "Epic was removed", 200);
         } else
