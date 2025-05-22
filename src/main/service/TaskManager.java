@@ -5,6 +5,7 @@ import main.model.Subtask;
 import main.model.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     long addEpic(Epic epic);
@@ -48,4 +49,12 @@ public interface TaskManager {
     List<Task> getHistory();
 
     void calculateAndSetEpicStartEndTimeAndDuration(Epic epic);
+
+    boolean containsEpicId(long id);
+
+    boolean containsSubtaskId(long id);
+
+    boolean containsTaskId(long id);
+
+    Set<Task> getPrioritizedTasks();
 }
