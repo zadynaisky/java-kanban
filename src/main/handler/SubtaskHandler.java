@@ -65,6 +65,8 @@ public class SubtaskHandler extends BaseHttpHandler {
             sendHasIntersections(httpExchange);
         } catch (JsonSyntaxException e) {
             sendBadRequest(httpExchange);
+        } catch (Exception e) {
+            sendBadRequest(httpExchange);
         }
     }
 
@@ -73,19 +75,29 @@ public class SubtaskHandler extends BaseHttpHandler {
             sendText(httpExchange, gson.toJson(taskManager.getSubtask(id)), 200);
         } catch (NotFoundException e) {
             sendNotFound(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
         }
     }
 
     private void getSubtasks(HttpExchange httpExchange) throws IOException {
-        String jsonSubtasks = gson.toJson(taskManager.getAllSubtasks());
-        sendText(httpExchange, jsonSubtasks, 200);
+        try {
+            String jsonSubtasks = gson.toJson(taskManager.getAllSubtasks());
+            sendText(httpExchange, jsonSubtasks, 200);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
+        }
     }
 
     private void removeSubtask(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.containsSubtaskId(id)) {
-            taskManager.removeSubtaskById(id);
-            sendText(httpExchange, "Subtask was removed", 200);
-        } else
-            sendNotFound(httpExchange);
+        try {
+            if (taskManager.containsSubtaskId(id)) {
+                taskManager.removeSubtaskById(id);
+                sendText(httpExchange, "Subtask was removed", 200);
+            } else
+                sendNotFound(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
+        }
     }
 }

@@ -42,6 +42,10 @@ public abstract class BaseHttpHandler implements HttpHandler {
         sendText(httpExchange, "Bad Request", 400);
     }
 
+    protected void sendInternalServerError(HttpExchange httpExchange) throws IOException {
+        sendText(httpExchange, "Internal Server Error", 500);
+    }
+
     protected int getId(String path) throws IOException {
         String[] arrayPath = path.split("/");
         return Integer.parseInt(arrayPath[2]);

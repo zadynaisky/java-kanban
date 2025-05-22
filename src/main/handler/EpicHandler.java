@@ -70,6 +70,8 @@ public class EpicHandler extends BaseHttpHandler {
             sendHasIntersections(httpExchange);
         } catch (JsonSyntaxException e) {
             sendBadRequest(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
         }
     }
 
@@ -78,26 +80,40 @@ public class EpicHandler extends BaseHttpHandler {
             sendText(httpExchange, gson.toJson(taskManager.getEpic(id)), 200);
         } catch (NotFoundException e) {
             sendNotFound(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
         }
     }
 
     private void getEpics(HttpExchange httpExchange) throws IOException {
-        String jsonEpics = gson.toJson(taskManager.getAllEpics());
-        sendText(httpExchange, jsonEpics, 200);
+        try {
+            String jsonEpics = gson.toJson(taskManager.getAllEpics());
+            sendText(httpExchange, jsonEpics, 200);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
+        }
     }
 
     private void getEpicSubtasks(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.containsEpicId(id))
-            sendText(httpExchange, gson.toJson(taskManager.getEpic(id).getSubtasks()), 200);
-        else
-            sendNotFound(httpExchange);
+        try {
+            if (taskManager.containsEpicId(id))
+                sendText(httpExchange, gson.toJson(taskManager.getEpic(id).getSubtasks()), 200);
+            else
+                sendNotFound(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
+        }
     }
 
     private void removeEpic(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.containsEpicId(id)) {
-            taskManager.removeEpicById(id);
-            sendText(httpExchange, "Epic was removed", 200);
-        } else
-            sendNotFound(httpExchange);
+        try {
+            if (taskManager.containsEpicId(id)) {
+                taskManager.removeEpicById(id);
+                sendText(httpExchange, "Epic was removed", 200);
+            } else
+                sendNotFound(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
+        }
     }
 }

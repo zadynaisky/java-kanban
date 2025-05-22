@@ -65,6 +65,8 @@ public class TaskHandler extends BaseHttpHandler {
             sendHasIntersections(httpExchange);
         } catch (JsonSyntaxException e) {
             sendBadRequest(httpExchange);
+        } catch (Exception e) {
+            sendBadRequest(httpExchange);
         }
     }
 
@@ -73,18 +75,28 @@ public class TaskHandler extends BaseHttpHandler {
             sendText(httpExchange, gson.toJson(taskManager.getTask(id)), 200);
         } catch (NotFoundException e) {
             sendNotFound(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
         }
     }
 
     private void getTasks(HttpExchange httpExchange) throws IOException {
-        sendText(httpExchange, gson.toJson(taskManager.getAllTasks()), 200);
+        try {
+            sendText(httpExchange, gson.toJson(taskManager.getAllTasks()), 200);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
+        }
     }
 
     private void removeTask(HttpExchange httpExchange, long id) throws IOException {
-        if (taskManager.containsTaskId(id)) {
-            taskManager.removeTaskById(id);
-            sendText(httpExchange, "Task was deleted", 200);
-        } else
-            sendNotFound(httpExchange);
+        try {
+            if (taskManager.containsTaskId(id)) {
+                taskManager.removeTaskById(id);
+                sendText(httpExchange, "Task was deleted", 200);
+            } else
+                sendNotFound(httpExchange);
+        } catch (Exception e) {
+            sendInternalServerError(httpExchange);
+        }
     }
 }
